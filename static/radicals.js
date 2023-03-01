@@ -13,6 +13,7 @@ const LEFT_TOP_RIGHT = "LEFT_TOP_RIGHT"
 const TOP_RIGHT = "TOP_RIGHT"
 const LEFT_TOP_BOTTOM = "LEFT_TOP_BOTTOM"
 const LEFT_TOP="LEFT_TOP"
+const ALL="ALL"
 
 const radicals = [
     { k: '⺃', m: 'the second', j: 'おつ', p: 'NILL' },
@@ -84,14 +85,13 @@ const radicals = [
     { k: "⼘", m: "oracle", j: "ぼく", p:NILL    },
     { k: "⼙", m: "stamp, seal", j: "ふしづくり", p:RIGHT    },
     { k: "⼚", m: "cliff", j: "がんだれ", p:LEFT_TOP    },
-     { k: "⼛", m: "private, Katakana Mu", j: "む", p:    },
-     { k: "", m: "", j: "", p:    },
-     { k: "", m: "", j: "", p:    },
-     { k: "", m: "", j: "", p:    },
-     { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
+     { k: "⼛", m: "private, Katakana Mu", j: "む", p:NILL    },
+     { k: "⼜", m: "again, right hand", j: "また", p:NILL    },
+     { k: "⼝", m: "mouth", j: "くち", p:NILL    },
+     { k: "", m: "mouth", j: "くちへん", p:LEFT    },
+     { k: "⼞", m: "border, territorial boundaries", j: "くにがまえ", p:ALL    },
+    { k: "⼟", m: "earth", j: "つち", p:NILL    },
+//    { k: "", m: "", j: "", p:    },
 
 
 
