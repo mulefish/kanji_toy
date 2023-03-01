@@ -3,18 +3,16 @@
 // m = meaning 
 // j = japanese reading 
 // p = position 
-// p:NILL = none
-// p:LEFT
-// p:TOP
-// P:RIGHT
-// P:BOTTOM
-const NILL = 'NILL'
+const NILL = "NILL"
 const LEFT = "LEFT"
 const TOP = "TOP"
 const RIGHT = "RIGHT"
 const BOTTOM = "BOTTOM"
 const LEFT_BOTTOM = "LEFT_BOTTOM"
 const LEFT_TOP_RIGHT = "LEFT_TOP_RIGHT"
+const TOP_RIGHT = "TOP_RIGHT"
+const LEFT_TOP_BOTTOM = "LEFT_TOP_BOTTOM"
+const LEFT_TOP="LEFT_TOP"
 
 const radicals = [
     { k: '⺃', m: 'the second', j: 'おつ', p: 'NILL' },
@@ -71,15 +69,33 @@ const radicals = [
     { k: "⼉", m: "human legs", j: "ひとあし", p:NILL    },
     { k: "⼊", m: "to enter", j: "いる", p:NILL    },
     { k: "⼋", m: "eight", j: "	はち", p: NILL   },
-    { k: "⼌", m: "to inclose", j: "", p:LEFT_TOP_RIGHT    },
+    { k: "⼌", m: "to enclose", j: "けいがまえ", p:LEFT_TOP_RIGHT    },
     { k: "⼍", m: "cover, crown", j: "わかんむり", p:TOP    },
-    { k: "⼎", m: "ice", j: "にすい", p:    },
+    { k: "⼎", m: "ice", j: "にすい", p:LEFT    },
+    { k: "⼏", m: "table", j: "きにょう", p:RIGHT    },
+    { k: "⼐", m: "container, open box", j: "かんにょう", p:LEFT_BOTTOM    },
+    { k: "⼑", m: "knife, sword", j: "かたな", p:NILL    },
+    { k: "⼒", m: "power", j: "ちから", p:NILL    },
+    { k: "⼓", m: "to wrap", j: "つつみがまえ", p:TOP_RIGHT    },
+    { k: "⼔", m: "spoon", j: "さじ", p:RIGHT    },
+    { k: "⼕", m: "box", j: "はこがまえ", p:LEFT_TOP_BOTTOM    },
+    { k: "⼖", m: "to conceal, hide", j: "かくしがまえ", p: LEFT_TOP_BOTTOM   },
+    { k: "⼗", m: "ten", j: "じゅう", p:NILL    },
+    { k: "⼘", m: "oracle", j: "ぼく", p:NILL    },
+    { k: "⼙", m: "stamp, seal", j: "ふしづくり", p:RIGHT    },
+    { k: "⼚", m: "cliff", j: "がんだれ", p:LEFT_TOP    },
+     { k: "⼛", m: "private, Katakana Mu", j: "む", p:    },
+     { k: "", m: "", j: "", p:    },
+     { k: "", m: "", j: "", p:    },
+     { k: "", m: "", j: "", p:    },
+     { k: "", m: "", j: "", p:    },
     { k: "", m: "", j: "", p:    },
     { k: "", m: "", j: "", p:    },
     { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
-    { k: "", m: "", j: "", p:    },
+
+
+
+
 
 
 
@@ -95,10 +111,11 @@ try {
 
         radicals.forEach((obj, i) => {
             if (obj.k.length > 0) {
-                console.log(obj.k, obj.p)
+                //console.log(obj.k, obj.p)
                 try {
                     if (obj.k.length < 1 || obj.m.length < 1 || obj.j.length < 1 || obj.p.length < 1) {
                         isOk = false
+                        console.log(obj)
                     } 
                 } catch (boom) {
                     console.log("boom " + obj)
@@ -107,7 +124,6 @@ try {
         })
         const verdict = isOk === true ? "PASS" : "FAIL"
         console.log("SHAPE IS: " + verdict)
-        console.log( radicals)
     }
 } catch (browser_go_boom) {
     console.log(browser_go_boom)
