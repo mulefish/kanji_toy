@@ -6,13 +6,52 @@
     <meta charset="UTF-8">
     <title>Dispense</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script type="text/javascript" src="/static/radicals.js"></script>
+    <style>
+        #myCanvas { border: 1px solid black; }
+    </style>
+
 </head>
 
 <body>
     {% include "header.html" %}
     <hr />
 
-    
+    <canvas id="myCanvas" width="300" height="300"></canvas>
+    <hr/>
+    <button onClick="read_data()">read_data</button>
+
+
+
+    <script>
+         
+        function read_data() {
+            const someKanji = radicals[Math.floor(Math.random() * radicals.length)];
+            console.log( someKanji)
+
+        }
+
+
+		var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+
+		// Draw the first kanji
+		ctx.font = "200px Arial";
+		ctx.textAlign = "center";
+		ctx.fillStyle = "black";
+		ctx.fillText("日", canvas.width/2, canvas.height/1.36);
+
+		// Draw the second kanji on top of the first one
+		ctx.font = "200px Arial";
+		ctx.textAlign = "center";
+		ctx.fillStyle = "#black";
+		ctx.fillText("本", canvas.width/2, canvas.height/1.36);
+
+
+    </script>
+
+
+
 
 </body>
 
