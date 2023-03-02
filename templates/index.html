@@ -4,11 +4,13 @@
 <head>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <meta charset="UTF-8">
-    <title>Dispense</title>
+    <title>Terraform_toy!</title>
     <link rel="stylesheet" href="/static/style.css">
     <script type="text/javascript" src="/static/radicals.js"></script>
     <style>
-        #myCanvas { border: 1px solid black; }
+        #myCanvas {
+            border: 1px solid black;
+        }
     </style>
 
 </head>
@@ -16,41 +18,77 @@
 <body>
     {% include "header.html" %}
     <hr />
-
-    <canvas id="myCanvas" width="300" height="300"></canvas>
-    <hr/>
-    <button onClick="read_data()">read_data</button>
+    <table border='1'>
+        <tr>
+            <td valign="top">
+                <button onClick='getType("NILL")'>NILL</button><br />
+                <button onClick='getType("TOP")'>TOP</button><br />
+                <button onClick='getType("LEFT")'>LEFT</button><br />
+                <button onClick='getType("BOTTOM")'>BOTTOM</button><br />
+                <button onClick='getType("LEFT_TOP_RIGHT")'>LEFT_TOP_RIGHT</button><br />
+                <button onClick='getType("RIGHT")'>RIGHT</button><br />
+                <button onClick='getType("LEFT_BOTTOM_RIGHT")'>LEFT_BOTTOM_RIGHT</button><br />
+                <button onClick='getType("TOP_RIGHT")'>TOP_RIGHT</button><br />
+                <button onClick='getType("LEFT_TOP_BOTTOM")'>LEFT_TOP_BOTTOM</button><br />
+                <button onClick='getType("LEFT_TOP")'>LEFT_TOP</button><br />
+                <button onClick='getType("ALL")'>ALL</button><br />
+                <button onClick='getType("LEFT_BOTTOM")'>LEFT_BOTTOM</button><br />
+                <button onClick='getType("TOP_LEFT")'>TOP_LEFT</button><br />
+                <button onClick='getType("UPPERLEFT_CENTER_BOTTOMRIGHT")'>UPPERLEFT_CENTER_BOTTOMRIGHT</button><br />
+                <button onClick='getType("LEFT_RIGHT")'>LEFT_RIGHT</button>
+            </td>
+            <td valign="top">
+                <canvas id="myCanvas" width="300" height="300"></canvas>
+            </td>
+        </tr>
+    </table>
+    <hr />
 
 
 
     <script>
-         
-        function read_data() {
-            const someKanji = radicals[Math.floor(Math.random() * radicals.length)];
-            console.log( someKanji)
 
+        function getType(type) { 
+
+            function filterByType(obj) {
+                return obj.p === type
+            }
+            const possible = radicals.filter(filterByType)
+            const someKanji = possible[Math.floor(Math.random() * possible.length)];
+            clear()
+            draw(someKanji.k, someKanji.p)        
         }
 
+        const canvas = document.getElementById("myCanvas");
+        const context = canvas.getContext("2d");
+        function clear() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        function draw(kanji, position)  {
 
-		var canvas = document.getElementById("myCanvas");
-		var ctx = canvas.getContext("2d");
-
-		// Draw the first kanji
-		ctx.font = "200px Arial";
-		ctx.textAlign = "center";
-		ctx.fillStyle = "black";
-		ctx.fillText("日", canvas.width/2, canvas.height/1.36);
-
-		// Draw the second kanji on top of the first one
-		ctx.font = "200px Arial";
-		ctx.textAlign = "center";
-		ctx.fillStyle = "#black";
-		ctx.fillText("本", canvas.width/2, canvas.height/1.36);
-
+            let align;
+            switch(position) {
+                case positions.LEFT:
+                    align = "left"
+                    break;
+                case positions.RIGHT:
+                    align = "right"
+                    break;
+                default:
+                    align = "center"
+            }
+            console.log( kanji, position, align)
+            context.font = "200px Arial";
+            context.textAlign = align;
+            context.fillStyle = "black";
+            context.fillText(kanji, canvas.width / 2, canvas.height / 1.36);
+        } 
 
     </script>
 
+    <script>
 
+    </script>
 
 
 </body>

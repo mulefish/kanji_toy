@@ -366,7 +366,6 @@ try {
             console.log(verdict + " member shape test")
             const verdict2 = isOkSeen === true ? "PASS " : "FAIL "
             console.log(verdict2 + " data inclusion test")
-
         }
         data_test()
     }
