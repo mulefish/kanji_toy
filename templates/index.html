@@ -18,10 +18,10 @@
 <body>
     {% include "header.html" %}
     <hr />
-    <table border='1'>
+    <table border='0'>
         <tr>
-            <td valign="top">
-                <button onClick='getType("NILL")'>NILL</button><br />
+            <td valign="top" align="right">
+                <!-- <button onClick='getType("NILL")'>NILL</button><br /> -->
                 <button onClick='getType("TOP")'>TOP</button><br />
                 <button onClick='getType("LEFT")'>LEFT</button><br />
                 <button onClick='getType("BOTTOM")'>BOTTOM</button><br />
@@ -53,37 +53,91 @@
             function filterByType(obj) {
                 return obj.p === type
             }
+            function filterByNILL(obj) {
+                return obj.p === "NILL"
+            }
             const possible = radicals.filter(filterByType)
             const someKanji = possible[Math.floor(Math.random() * possible.length)];
             clear()
             draw(someKanji.k, someKanji.p)        
-        }
+            const possible2 = radicals.filter(filterByNILL)
+            const someKanji2 = possible2[Math.floor(Math.random() * possible.length)];
+            draw2(someKanji2.k, someKanji2.p)        
 
+        }
         const canvas = document.getElementById("myCanvas");
         const context = canvas.getContext("2d");
+        const across_oneThird = canvas.width / 3
+        const down_oneThird = canvas.height / 3 
+        const across_twoThird = across_oneThird * 2
+        const down_twoThird = down_oneThird * 2
+
         function clear() {
             context.clearRect(0, 0, canvas.width, canvas.height);
-        }
-        function draw(kanji, position)  {
+            // 
+            context.beginPath(); 
+            context.moveTo(0,down_oneThird);  
+            context.lineTo(canvas.width,down_oneThird);
+            context.stroke();
+            //
+            context.beginPath(); 
+            context.moveTo(0,down_oneThird * 2);  
+            context.lineTo(canvas.width,across_twoThird);
+            context.stroke();
+            //
+            context.beginPath(); 
+            context.moveTo(across_oneThird, 0);  
+            context.lineTo(across_oneThird, canvas.height);
+            context.stroke();
+            //
+            context.beginPath(); 
+            context.moveTo(across_twoThird, 0);  
+            context.lineTo(across_twoThird, canvas.height);
+            context.stroke();
 
-            let align;
-            switch(position) {
-                case positions.LEFT:
-                    align = "left"
-                    break;
-                case positions.RIGHT:
-                    align = "right"
-                    break;
-                default:
-                    align = "center"
-            }
-            console.log( kanji, position, align)
-            context.font = "200px Arial";
-            context.textAlign = align;
-            context.fillStyle = "black";
-            context.fillText(kanji, canvas.width / 2, canvas.height / 1.36);
+
+        }
+
+        function draw2(kanji, position)  {
+            let x1 = across_oneThird + 50
+            let y1 = down_twoThird
+            context.font = "140px Arial";
+            context.textAlign = "center";
+
+            context.fillStyle =  "rgba(255, 133,33, 0.8)";
+            context.fillText(kanji, x1, y1);
+
         } 
 
+
+        function draw(kanji, position)  {
+            // let x1;
+            // let y1; 
+            let x1 = across_oneThird + 50 
+            let y1 = down_twoThird
+            let align
+
+            switch(position) {
+                case positions.LEFT:
+                    align = "right"
+                    break;
+                case positions.RIGHT:
+                    align = "left"
+                    break
+                default:
+                    align = "center"
+
+            }
+            const size = 110
+            console.log( "x1", x1, "y1", y1, kanji, position )
+            context.font = `${size}px Arial`;
+            // context.textAlign = align;
+            context.fillStyle = "black";
+            // context.fillText(kanji, canvas.width / 2, canvas.height / 1.36);
+            context.fillText(kanji, x1 - 100, y1);
+
+        } 
+        clear()
     </script>
 
     <script>
