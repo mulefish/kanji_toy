@@ -42,8 +42,39 @@
             </td>
             <td valign="top">
                 <canvas id="canvas" width="400" height="400"></canvas>
+            </td>
+            <td valign="top">
+                <div id="activeThing">&nbsp;</div>
+                <table border="1">
+                    <tr>
+                        <th>name</th>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>kanji</th>
+                        <th>size</th>
+                    </tr>
+                    <tr>
+                        <td id="nA"></td>
+                        <td id="xA"></td>
+                        <td id="yA"></td>
+                        <td id="kA"></td>
+                        <td id="sA"></td>
+                    </tr>
+                    <tr>
+                        <td id="nB"></td>
+                        <td id="xB"></td>
+                        <td id="yB"></td>
+                        <td id="kB"></td>
+                        <td id="sB"></td>
+                    </tr>
+
+                </table>
+
 
             </td>
+
+
+
 
         </tr>
     </table>
@@ -52,9 +83,28 @@
 
     <script>
 class Thing {
-    constructor(x, y) {
+    constructor(x, y, kanji,name) {
         this.x = x
         this.y = y
+        this.kanji = kanji
+        this.name = name
+        this.size = 100 
+
+    }
+    updateDom(caller) { 
+        const n = 'n' + this.name
+        const x = 'x' + this.name
+        const y = 'y' + this.name
+        const k = 'k' + this.name
+        const s  = 's' + this.name
+
+        document.getElementById(n).innerHTML = "&nbsp;&nbsp; " + this.name
+        document.getElementById(x).innerHTML = this.x 
+        document.getElementById(y).innerHTML = this.y
+        document.getElementById(k).innerHTML = "&nbsp;&nbsp; " + this.kanji
+        document.getElementById(s).innerHTML = this.size
+
+
     }
 } 
 
@@ -82,9 +132,9 @@ let active = 0
 function init() {
     screenRect = canvas.getBoundingClientRect();
 
-    things.push( new Thing(canvas.width / 2, canvas.height / 2 ))
-    things.push( new Thing(50, 50 ))
-
+    things.push( new Thing(100, 100, "⼌", "A" ))
+    things.push( new Thing(50, 50, "⼛", "B" ))
+    things[0].updateDom("line 33 ") 
     addKeyEventListener();
 
     animate();
@@ -159,14 +209,28 @@ function drawCanvasBackground() {
     ctx.beginPath();
     ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.stroke();
+
+
 }
 
 function drawRect() {
     ctx.strokeStyle = 'black';
     things.forEach((thing)=> { 
+        //ctx.beginPath();
+        //ctx.rect(thing.x - WIDTH / 2, thing.y - HEIGHT / 2, WIDTH, HEIGHT);
+        //ctx.stroke();
+
         ctx.beginPath();
-        ctx.rect(thing.x - WIDTH / 2, thing.y - HEIGHT / 2, WIDTH, HEIGHT);
+        ctx.arc(thing.x, thing.y, 20, 0, 2 * Math.PI);
         ctx.stroke();
+
+
+        ctx.fillStyle = "black";
+    ctx.strokeStyle = "black";
+    ctx.font = "35px Arial";
+    ctx.fillText(thing.kanji, thing.x, thing.y);
+    ctx.stroke();
+
 
 
     })
