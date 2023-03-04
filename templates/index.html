@@ -62,10 +62,13 @@
                     <tr>
                         <th>active</th>
                         <th>state</th>
+                        <th>lastActive</th>
                     </tr>
                     <tr>
                         <th id="active">&nbsp;</th>
                         <th id="state">&nbsp;</th>
+                        <th id="lastActive">&nbsp;</th>
+                        
                     </tr>
 
                 </table>
@@ -76,6 +79,8 @@
                         <th>y</th>
                         <th>kanji</th>
                         <th>size</th>
+                        <th>bigger</th>
+                        <th>smaller</th>
                     </tr>
                     <tr>
                         <td id="nA"></td>
@@ -83,6 +88,8 @@
                         <td id="yA"></td>
                         <td id="kA"></td>
                         <td id="sA"></td>
+                        <td><button onClick='sizer(0, 2)'>A+</button></td>
+                        <td><button onClick='sizer(0, -2)'>A-</button></td>
                     </tr>
                     <tr>
                         <td id="nB"></td>
@@ -90,6 +97,9 @@
                         <td id="yB"></td>
                         <td id="kB"></td>
                         <td id="sB"></td>
+                        <td><button onClick='sizer(1, 2)'>B+</button></td>
+                        <td><button onClick='sizer(1, -2)'>B-</button></td>
+
                     </tr>
 
                 </table>
@@ -147,6 +157,10 @@
         let active = 0
         let lastActive = undefined
         //
+
+        function sizer(index, newSize) { 
+            twoKanjis[index].size += newSize
+        }
         function init() {
             screenRect = canvas.getBoundingClientRect();
 
@@ -219,7 +233,7 @@
                 //var y = event.clientY - screenRect.top;
                 isMouseDown = false;
                 isRectSelected = false;
-
+                // active = NILL
             }
 
             canvas.onmouseout = function (e) {
@@ -257,7 +271,7 @@
                 // ctx.stroke();
                 ctx.fillStyle = "black";
                 ctx.strokeStyle = "black";
-                ctx.font = "35px Arial";
+                ctx.font = thing.size + "px Arial";
                 ctx.fillText(thing.kanji, thing.x, thing.y);
                 ctx.stroke();
             })
