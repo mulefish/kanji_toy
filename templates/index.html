@@ -38,21 +38,7 @@
         <tr>
 
             <td valign="top" align="right">
-                <!-- <button onClick='getType("NILL")'>NILL</button><br /> -->
-                <button onClick='getType("TOP")'>TOP</button><br />
-                <button onClick='getType("LEFT")'>LEFT</button><br />
-                <button onClick='getType("BOTTOM")'>BOTTOM</button><br />
-                <button onClick='getType("LEFT_TOP_RIGHT")'>LEFT_TOP_RIGHT</button><br />
-                <button onClick='getType("RIGHT")'>RIGHT</button><br />
-                <button onClick='getType("LEFT_BOTTOM_RIGHT")'>LEFT_BOTTOM_RIGHT</button><br />
-                <button onClick='getType("TOP_RIGHT")'>TOP_RIGHT</button><br />
-                <button onClick='getType("LEFT_TOP_BOTTOM")'>LEFT_TOP_BOTTOM</button><br />
-                <button onClick='getType("LEFT_TOP")'>LEFT_TOP</button><br />
-                <button onClick='getType("ALL")'>ALL</button><br />
-                <button onClick='getType("LEFT_BOTTOM")'>LEFT_BOTTOM</button><br />
-                <button onClick='getType("TOP_LEFT")'>TOP_LEFT</button><br />
-                <button onClick='getType("UPPERLEFT_CENTER_BOTTOMRIGHT")'>UPPERLEFT_CENTER_BOTTOMRIGHT</button><br />
-                <button onClick='getType("LEFT_RIGHT")'>LEFT_RIGHT</button>
+                <button onClick="getTwoRandomKanjis()">get 2 diff kanjis</button>
             </td>
             <td valign="top">
                 <canvas id="canvas" width="400" height="400"></canvas>
@@ -62,12 +48,12 @@
                     <tr>
                         <th>active</th>
                         <th>state</th>
-                        <th>lastActive</th>
+                        <!-- <th>lastActive</th> -->
                     </tr>
                     <tr>
                         <th id="active">&nbsp;</th>
                         <th id="state">&nbsp;</th>
-                        <th id="lastActive">&nbsp;</th>
+                        <!-- <th id="lastActive">&nbsp;</th> -->
                         
                     </tr>
 
@@ -79,6 +65,7 @@
                         <th>y</th>
                         <th>kanji</th>
                         <th>size</th>
+                        <th>english</th>
                         <th>bigger</th>
                         <th>smaller</th>
                     </tr>
@@ -88,6 +75,7 @@
                         <td id="yA"></td>
                         <td id="kA"></td>
                         <td id="sA"></td>
+                        <td id="eA"></td>
                         <td><button onClick='sizer(0, 2)'>A+</button></td>
                         <td><button onClick='sizer(0, -2)'>A-</button></td>
                     </tr>
@@ -97,6 +85,7 @@
                         <td id="yB"></td>
                         <td id="kB"></td>
                         <td id="sB"></td>
+                        <td id="eB"></td>
                         <td><button onClick='sizer(1, 2)'>B+</button></td>
                         <td><button onClick='sizer(1, -2)'>B-</button></td>
 
@@ -117,12 +106,13 @@
 
     <script>
         class Thing {
-            constructor(x, y, kanji, name) {
+            constructor(x, y, kanji, name, english) {
+                this.size = 100
                 this.x = x
                 this.y = y
                 this.kanji = kanji
                 this.name = name
-                this.size = 100
+                this.english = english
 
             }
             updateDom() {
@@ -131,12 +121,14 @@
                 const y = 'y' + this.name
                 const k = 'k' + this.name
                 const s = 's' + this.name
+                const e = 'e' + this.name
 
                 document.getElementById(n).innerHTML = "&nbsp;&nbsp; " + this.name
                 document.getElementById(x).innerHTML = this.x
                 document.getElementById(y).innerHTML = this.y
                 document.getElementById(k).innerHTML = "&nbsp;&nbsp; " + this.kanji
                 document.getElementById(s).innerHTML = this.size
+                document.getElementById(e).innerHTML = this.english
             }
         }
 
@@ -146,28 +138,50 @@
 
 
     <script>
+        function setState() {
+            if ( isMouseDown ) {
+                state = LOCKED
+            } else {
+                state = UNLOCKED
+            } 
+            document.getElementById("state").innerHTML = state
+        }
         // Globals
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let screenRect;
-        const twoKanjis = []
+        let twoKanjis = []
         let prevMouseX, prevMouseY;
         let isMouseDown = false;
         const NILL = -1
         let active = 0
         let lastActive = undefined
+        const UNLOCKED = "UNLOCKED"
+        const LOCKED = "LOCKED"
+        let state = UNLOCKED
         //
-
         function sizer(index, newSize) { 
             twoKanjis[index].size += newSize
         }
-        function init() {
-            screenRect = canvas.getBoundingClientRect();
 
-            twoKanjis.push(new Thing(100, 100, "⼌", "A"))
-            twoKanjis.push(new Thing(50, 50, "⼛", "B"))
+        function getTwoRandomKanjis() { 
+            const left = getRandomThingByType(positions.LEFT)
+            const nill = getRandomThingByType(positions.LEFT)
+            twoKanjis = [] 
+            twoKanjis.push(new Thing(200, 100, left.k, "A", left.e))
+            twoKanjis.push(new Thing(250, 200, nill.k, "B", nill.e))
+            console.log("left " + JSON.stringify( left ))
+            console.log("nill " + JSON.stringify( nill ))
             twoKanjis[0].updateDom()
             twoKanjis[1].updateDom()
+
+        }
+
+        function init() {
+            screenRect = canvas.getBoundingClientRect();
+            const goat = getSomeRandomThing() 
+
+            getTwoRandomKanjis()
             addKeyEventListener();
 
             animate();
@@ -179,14 +193,12 @@
             return false 
         }
         function addKeyEventListener() {
-
             canvas.onmousedown = function (e) {
                 prevMouseX = event.clientX - screenRect.left;
                 prevMouseY = event.clientY - screenRect.top;
                 isMouseDown = true;
-                //                document.getElementById("active").innerHTML = twoKanjis[active].name
+                setState(isMouseDown)
             }
-
             canvas.onmousemove = function (e) {
                 if (isMouseDown && active !== NILL) {
                     const x = event.clientX - screenRect.left;
@@ -207,14 +219,13 @@
                         if (lastActive !== active) {
                             lastActive = active
                             twoKanjis[active].updateDom()
-                            console.log("%c " + active + " " + lastActive, "background:blue")
+                            // console.log("%c " + active + " " + lastActive, "background:blue")
                         }
                         active = found
                         document.getElementById("active").innerHTML = twoKanjis[active].name
                         const dx = x - prevMouseX;
                         const dy = y - prevMouseY;
-                        // if (twoKanjis[active].x + dx > 0) {
-                        //     if (twoKanjis[active].y + dy > 0) {
+
                         const candidateX = twoKanjis[active].x + dx
                         const candidateY = twoKanjis[active].y + dy
                         if (isInBounds(candidateX, candidateY)) {
@@ -234,6 +245,8 @@
                 isMouseDown = false;
                 isRectSelected = false;
                 // active = NILL
+                setState(isMouseDown)
+
             }
 
             canvas.onmouseout = function (e) {
@@ -267,11 +280,12 @@
             ctx.strokeStyle = 'black';
             twoKanjis.forEach((thing) => {
                 // ctx.beginPath();
-                // ctx.arc(thing.x, thing.y, 20, 0, 2 * Math.PI);
+                // ctx.arc(thing.x, thing.y, thing.size, 0, 2 * Math.PI);
                 // ctx.stroke();
                 ctx.fillStyle = "black";
                 ctx.strokeStyle = "black";
-                ctx.font = thing.size + "px Arial";
+                ctx.textAlign = "end";
+                ctx.font = `${thing.size}px Arial`;
                 ctx.fillText(thing.kanji, thing.x, thing.y);
                 ctx.stroke();
             })

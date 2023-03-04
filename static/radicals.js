@@ -250,9 +250,7 @@ const radicals = [
     { k: '⾤', e: 'to separate', j: 'のごめ', p: positions.NILL },
     { k: '', e: 'to separate', j: 'のごめ', p: positions.NILL },
     { k: '⾥', e: 'village, (3.93 km)', j: 'さと', p: positions.NILL },
-    { k: '', e: 'village, (3.93 km)', j: 'さと', p: positions.LEFT },
     { k: '⾂', e: 'retainer, minister', j: 'しん', p: positions.NILL },
-    { k: '', e: 'contrary, to err', j: 'まいあし', p: positions.NILL },
     { k: '⻨', e: 'wheat', j: 'むぎ', p: positions.NILL },
     { k: '⾦', e: 'metal, gold, mineral', j: 'かね', p: positions.NILL },
     { k: '⻑', e: 'long', j: 'ながい', p: positions.NILL },
@@ -319,6 +317,15 @@ function filterByType(placement_of_radical) {
     })
     return subset
 }
+function getSomeRandomThing() {
+    return positions[Math.floor(Math.random()*positions.length)];
+}
+
+function getRandomThingByType(type) { 
+    const ary = filterByType(type)
+    return ary[Math.floor(Math.random()*ary.length)];
+
+}
 
 ////
 
@@ -362,10 +369,31 @@ try {
             const b = compareMaps(seen, positions)
             const isOkSeen = a === b && a === true
 
+            let verdict_isNILL = "FAIL getNILL_test"
+            function getNILL_test() {
+                const n = getRandomThingByType(positions.NILL)
+                if ( n.p === positions.NILL ) { 
+                    verdict_isNILL = "PASS getNILL_test"
+                }
+            }
+            let verdict_isLEFT = "FAIL getLEFT_test"
+            function getLEFT_test() {
+                const n = getRandomThingByType(positions.LEFT)
+
+                if ( n.p === positions.LEFT ) { 
+
+                    verdict_isLEFT = "PASS getLEFT_test"
+                }
+            }
+
+            getNILL_test()
+            getLEFT_test()
             const verdict = isOkShape === true ? "PASS " : "FAIL "
-            console.log(verdict + " member shape test")
+            console.log(verdict + "member shape test")
             const verdict2 = isOkSeen === true ? "PASS " : "FAIL "
-            console.log(verdict2 + " data inclusion test")
+            console.log(verdict2 + "data inclusion test")
+            console.log(verdict_isNILL )
+            console.log(verdict_isLEFT )
         }
         data_test()
     }
