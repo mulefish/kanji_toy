@@ -8,11 +8,21 @@
     <link rel="stylesheet" href="/static/style.css">
     <script type="text/javascript" src="/static/radicals.js"></script>
 
-<style type="text/css">
-	h4 {font-family: sans-serif;}
-	p {font-family: sans-serif;}
-	a {font-family: sans-serif; color:#d15423; text-decoration:none;}
-</style>
+    <style type="text/css">
+        h4 {
+            font-family: sans-serif;
+        }
+
+        p {
+            font-family: sans-serif;
+        }
+
+        a {
+            font-family: sans-serif;
+            color: #d15423;
+            text-decoration: none;
+        }
+    </style>
 
 
 </head>
@@ -44,7 +54,17 @@
                 <canvas id="canvas" width="400" height="400"></canvas>
             </td>
             <td valign="top">
-                <div id="activeThing">&nbsp;</div>
+                <table border="1">
+                    <tr>
+                        <th>active</th>
+                        <th>state</th>
+                    </tr>
+                    <tr>
+                        <th id="active">&nbsp;</th>
+                        <th id="state">&nbsp;</th>
+                    </tr>
+
+                </table>
                 <table border="1">
                     <tr>
                         <th>name</th>
@@ -82,31 +102,31 @@
 
 
     <script>
-class Thing {
-    constructor(x, y, kanji,name) {
-        this.x = x
-        this.y = y
-        this.kanji = kanji
-        this.name = name
-        this.size = 100 
+        class Thing {
+            constructor(x, y, kanji, name) {
+                this.x = x
+                this.y = y
+                this.kanji = kanji
+                this.name = name
+                this.size = 100
 
-    }
-    updateDom(caller) { 
-        const n = 'n' + this.name
-        const x = 'x' + this.name
-        const y = 'y' + this.name
-        const k = 'k' + this.name
-        const s  = 's' + this.name
+            }
+            updateDom() {
+                const n = 'n' + this.name
+                const x = 'x' + this.name
+                const y = 'y' + this.name
+                const k = 'k' + this.name
+                const s = 's' + this.name
 
-        document.getElementById(n).innerHTML = "&nbsp;&nbsp; " + this.name
-        document.getElementById(x).innerHTML = this.x 
-        document.getElementById(y).innerHTML = this.y
-        document.getElementById(k).innerHTML = "&nbsp;&nbsp; " + this.kanji
-        document.getElementById(s).innerHTML = this.size
+                document.getElementById(n).innerHTML = "&nbsp;&nbsp; " + this.name
+                document.getElementById(x).innerHTML = this.x
+                document.getElementById(y).innerHTML = this.y
+                document.getElementById(k).innerHTML = "&nbsp;&nbsp; " + this.kanji
+                document.getElementById(s).innerHTML = this.size
 
 
-    }
-} 
+            }
+        }
 
 
     </script>
@@ -115,133 +135,123 @@ class Thing {
 
     <script>
 
-        
 
 
-const canvas = document.getElementById('canvas');
-const  ctx =  canvas.getContext('2d');
-let screenRect;
 
-const things = [] 
-var WIDTH = 100, HEIGHT = 50;
-// var prevMouseX, prevMouseY;
-var isMouseDown = false;
-const NILL = -1
-let active = 0
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let screenRect;
+        const twoKanjis = []
+        let prevMouseX, prevMouseY;
+        let isMouseDown = false;
+        const NILL = -1
+        let active = 0
+        let lastActive = 0
 
-function init() {
-    screenRect = canvas.getBoundingClientRect();
+        function init() {
+            screenRect = canvas.getBoundingClientRect();
 
-    things.push( new Thing(100, 100, "⼌", "A" ))
-    things.push( new Thing(50, 50, "⼛", "B" ))
-    things[0].updateDom("line 33 ") 
-    addKeyEventListener();
+            twoKanjis.push(new Thing(100, 100, "⼌", "A"))
+            twoKanjis.push(new Thing(50, 50, "⼛", "B"))
+            twoKanjis[0].updateDom()
+            twoKanjis[1].updateDom()
+            addKeyEventListener();
 
-    animate();
-}
+            animate();
+        }
 
-function addKeyEventListener() {
+        function addKeyEventListener() {
 
-    canvas.onmousedown = function(e) {
-        var x = event.clientX - screenRect.left;
-        var y = event.clientY - screenRect.top;
+            canvas.onmousedown = function (e) {
+                var x = event.clientX - screenRect.left;
+                var y = event.clientY - screenRect.top;
 
-        prevMouseX = x;
-        prevMouseY = y;
-
-        isMouseDown = true;
-    }
-
-    canvas.onmousemove = function(e) {
-        if(isMouseDown && active !== NILL) {
-            const x = event.clientX - screenRect.left;
-            const y = event.clientY - screenRect.top;
-
-            let horizon = 300
-            let actual = 10000000;
-            let found = NILL 
-            things.forEach((thing, i )=> { 
-                const d  = Math.sqrt((thing.x - x) * (thing.x - x) + (thing.y - y) * (thing.y - y));
-                console.log( i + "    " + x + "   y " + y + "   " + d )
-                if ( d < actual && d < horizon ) {
-                    actual = d 
-                    found = i 
-                }
-            })
-            if ( found !== NILL ) {
-                active = found 
-                const dx = x - prevMouseX;
-                const dy = y - prevMouseY;
-                things[active].x += dx
-                things[active].y += dy
                 prevMouseX = x;
                 prevMouseY = y;
+
+                isMouseDown = true;
+            }
+
+            canvas.onmousemove = function (e) {
+                if (isMouseDown && active !== NILL) {
+                    const x = event.clientX - screenRect.left;
+                    const y = event.clientY - screenRect.top;
+
+                    let horizon = 100
+                    let actual = 10000000;
+                    let found = NILL
+                    twoKanjis.forEach((thing, i) => {
+                        const d = Math.sqrt((thing.x - x) * (thing.x - x) + (thing.y - y) * (thing.y - y));
+                        // console.log( i + "    " + x + "   y " + y + "   " + d )
+                        if (d < actual && d < horizon) {
+                            actual = d
+                            found = i
+                        }
+                    })
+                    if (found !== NILL) {
+                        active = found
+                        const dx = x - prevMouseX;
+                        const dy = y - prevMouseY;
+                        twoKanjis[active].x += dx
+                        twoKanjis[active].y += dy
+                        prevMouseX = x;
+                        prevMouseY = y;
+                    }
+                }
+            }
+
+            canvas.onmouseup = function (e) {
+                var x = event.clientX - screenRect.left;
+                var y = event.clientY - screenRect.top;
+                isMouseDown = false;
+                isRectSelected = false;
+            }
+
+            canvas.onmouseout = function (e) {
+                isMouseDown = false;
             }
         }
-    }
 
-    canvas.onmouseup = function(e) {
-        var x = event.clientX - screenRect.left;
-        var y = event.clientY - screenRect.top;
-        isMouseDown = false;
-        isRectSelected = false;
-    }
+        function animate() {
+            drawCanvasBackground();
+            draw();
+            requestAnimationFrame(function () {
+                // The window.requestAnimationFrame() method tells the browser 
+                // that you wish to perform an animation and requests that the 
+                // browser calls a specified function to update an animation before 
+                // the next repaint. The method takes a callback as an argument to 
+                // be invoked before the repaint.
+                animate();
+            });
+        }
 
-    canvas.onmouseout = function(e) {
-        isMouseDown = false;
-    }
-}
+        function drawCanvasBackground() {
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
 
-function animate() {
-    drawCanvasBackground();
-    drawRect();
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.rect(0, 0, canvas.width, canvas.height);
+            ctx.stroke();
+        }
 
-    requestAnimationFrame(function() {
-        animate();
-    });
-}
-
-function drawCanvasBackground() {
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = 'black';
-
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.stroke();
-
-
-}
-
-function drawRect() {
-    ctx.strokeStyle = 'black';
-    things.forEach((thing)=> { 
-        //ctx.beginPath();
-        //ctx.rect(thing.x - WIDTH / 2, thing.y - HEIGHT / 2, WIDTH, HEIGHT);
-        //ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(thing.x, thing.y, 20, 0, 2 * Math.PI);
-        ctx.stroke();
-
-
-        ctx.fillStyle = "black";
-    ctx.strokeStyle = "black";
-    ctx.font = "35px Arial";
-    ctx.fillText(thing.kanji, thing.x, thing.y);
-    ctx.stroke();
+        function draw() {
+            ctx.strokeStyle = 'black';
+            twoKanjis.forEach((thing) => {
+                // ctx.beginPath();
+                // ctx.arc(thing.x, thing.y, 20, 0, 2 * Math.PI);
+                // ctx.stroke();
+                ctx.fillStyle = "black";
+                ctx.strokeStyle = "black";
+                ctx.font = "35px Arial";
+                ctx.fillText(thing.kanji, thing.x, thing.y);
+                ctx.stroke();
+            })
+        }
 
 
 
-    })
-    // ctx.beginPath();
-    // ctx.rect(rectX[0] - WIDTH / 2, rectY[0] - HEIGHT / 2, WIDTH, HEIGHT);
-    // ctx.stroke();
-}
-
-
-
-init()
+        init()
     </script>
 
 </body>
