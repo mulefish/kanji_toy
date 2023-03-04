@@ -7,19 +7,22 @@
     <title>Terraform_toy!</title>
     <link rel="stylesheet" href="/static/style.css">
     <script type="text/javascript" src="/static/radicals.js"></script>
-    <style>
-        #myCanvas {
-            border: 1px solid black;
-        }
-    </style>
+
+<style type="text/css">
+	h4 {font-family: sans-serif;}
+	p {font-family: sans-serif;}
+	a {font-family: sans-serif; color:#d15423; text-decoration:none;}
+</style>
+
 
 </head>
 
 <body>
     {% include "header.html" %}
     <hr />
-    <table border='0'>
+    <table border='1'>
         <tr>
+
             <td valign="top" align="right">
                 <!-- <button onClick='getType("NILL")'>NILL</button><br /> -->
                 <button onClick='getType("TOP")'>TOP</button><br />
@@ -38,112 +41,144 @@
                 <button onClick='getType("LEFT_RIGHT")'>LEFT_RIGHT</button>
             </td>
             <td valign="top">
-                <canvas id="myCanvas" width="300" height="300"></canvas>
+                <canvas id="canvas" width="400" height="400"></canvas>
+
             </td>
+
         </tr>
     </table>
     <hr />
 
 
-
     <script>
+class Thing {
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+    }
+} 
 
-        function getType(type) { 
-
-            function filterByType(obj) {
-                return obj.p === type
-            }
-            function filterByNILL(obj) {
-                return obj.p === "NILL"
-            }
-            const possible = radicals.filter(filterByType)
-            const someKanji = possible[Math.floor(Math.random() * possible.length)];
-            clear()
-            draw(someKanji.k, someKanji.p)        
-            const possible2 = radicals.filter(filterByNILL)
-            const someKanji2 = possible2[Math.floor(Math.random() * possible.length)];
-            draw2(someKanji2.k, someKanji2.p)        
-
-        }
-        const canvas = document.getElementById("myCanvas");
-        const context = canvas.getContext("2d");
-        const across_oneThird = canvas.width / 3
-        const down_oneThird = canvas.height / 3 
-        const across_twoThird = across_oneThird * 2
-        const down_twoThird = down_oneThird * 2
-
-        function clear() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            // 
-            context.beginPath(); 
-            context.moveTo(0,down_oneThird);  
-            context.lineTo(canvas.width,down_oneThird);
-            context.stroke();
-            //
-            context.beginPath(); 
-            context.moveTo(0,down_oneThird * 2);  
-            context.lineTo(canvas.width,across_twoThird);
-            context.stroke();
-            //
-            context.beginPath(); 
-            context.moveTo(across_oneThird, 0);  
-            context.lineTo(across_oneThird, canvas.height);
-            context.stroke();
-            //
-            context.beginPath(); 
-            context.moveTo(across_twoThird, 0);  
-            context.lineTo(across_twoThird, canvas.height);
-            context.stroke();
-
-
-        }
-
-        function draw2(kanji, position)  {
-            let x1 = across_oneThird + 50
-            let y1 = down_twoThird
-            context.font = "140px Arial";
-            context.textAlign = "center";
-
-            context.fillStyle =  "rgba(255, 133,33, 0.8)";
-            context.fillText(kanji, x1, y1);
-
-        } 
-
-
-        function draw(kanji, position)  {
-            // let x1;
-            // let y1; 
-            let x1 = across_oneThird + 50 
-            let y1 = down_twoThird
-            let align
-
-            switch(position) {
-                case positions.LEFT:
-                    align = "right"
-                    break;
-                case positions.RIGHT:
-                    align = "left"
-                    break
-                default:
-                    align = "center"
-
-            }
-            const size = 110
-            console.log( "x1", x1, "y1", y1, kanji, position )
-            context.font = `${size}px Arial`;
-            // context.textAlign = align;
-            context.fillStyle = "black";
-            // context.fillText(kanji, canvas.width / 2, canvas.height / 1.36);
-            context.fillText(kanji, x1 - 100, y1);
-
-        } 
-        clear()
-    </script>
-
-    <script>
 
     </script>
 
+
+
+    <script>
+
+        
+
+
+const canvas = document.getElementById('canvas');
+const  ctx =  canvas.getContext('2d');
+let screenRect;
+
+const things = [] 
+var WIDTH = 100, HEIGHT = 50;
+// var prevMouseX, prevMouseY;
+var isMouseDown = false;
+const NILL = -1
+let active = 0
+
+function init() {
+    screenRect = canvas.getBoundingClientRect();
+
+    things.push( new Thing(canvas.width / 2, canvas.height / 2 ))
+    things.push( new Thing(50, 50 ))
+
+    addKeyEventListener();
+
+    animate();
+}
+
+function addKeyEventListener() {
+
+    canvas.onmousedown = function(e) {
+        var x = event.clientX - screenRect.left;
+        var y = event.clientY - screenRect.top;
+
+        prevMouseX = x;
+        prevMouseY = y;
+
+        isMouseDown = true;
+    }
+
+    canvas.onmousemove = function(e) {
+        if(isMouseDown && active !== NILL) {
+            const x = event.clientX - screenRect.left;
+            const y = event.clientY - screenRect.top;
+
+            let horizon = 300
+            let actual = 10000000;
+            let found = NILL 
+            things.forEach((thing, i )=> { 
+                const d  = Math.sqrt((thing.x - x) * (thing.x - x) + (thing.y - y) * (thing.y - y));
+                console.log( i + "    " + x + "   y " + y + "   " + d )
+                if ( d < actual && d < horizon ) {
+                    actual = d 
+                    found = i 
+                }
+            })
+            if ( found !== NILL ) {
+                active = found 
+                const dx = x - prevMouseX;
+                const dy = y - prevMouseY;
+                things[active].x += dx
+                things[active].y += dy
+                prevMouseX = x;
+                prevMouseY = y;
+            }
+        }
+    }
+
+    canvas.onmouseup = function(e) {
+        var x = event.clientX - screenRect.left;
+        var y = event.clientY - screenRect.top;
+        isMouseDown = false;
+        isRectSelected = false;
+    }
+
+    canvas.onmouseout = function(e) {
+        isMouseDown = false;
+    }
+}
+
+function animate() {
+    drawCanvasBackground();
+    drawRect();
+
+    requestAnimationFrame(function() {
+        animate();
+    });
+}
+
+function drawCanvasBackground() {
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'black';
+
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.stroke();
+}
+
+function drawRect() {
+    ctx.strokeStyle = 'black';
+    things.forEach((thing)=> { 
+        ctx.beginPath();
+        ctx.rect(thing.x - WIDTH / 2, thing.y - HEIGHT / 2, WIDTH, HEIGHT);
+        ctx.stroke();
+
+
+    })
+    // ctx.beginPath();
+    // ctx.rect(rectX[0] - WIDTH / 2, rectY[0] - HEIGHT / 2, WIDTH, HEIGHT);
+    // ctx.stroke();
+}
+
+
+
+init()
+    </script>
 
 </body>
 
