@@ -9,6 +9,9 @@
     <script type="text/javascript" src="/static/radicals.js"></script>
 
     <style type="text/css">
+        body{
+user-select: none;
+}
         h4 {
             font-family: sans-serif;
         }
@@ -146,7 +149,7 @@
         let isMouseDown = false;
         const NILL = -1
         let active = 0
-        let lastActive = 0
+        let lastActive = undefined
 
         function init() {
             screenRect = canvas.getBoundingClientRect();
@@ -163,13 +166,10 @@
         function addKeyEventListener() {
 
             canvas.onmousedown = function (e) {
-                var x = event.clientX - screenRect.left;
-                var y = event.clientY - screenRect.top;
-
-                prevMouseX = x;
-                prevMouseY = y;
-
+                prevMouseX = event.clientX - screenRect.left;
+                prevMouseY = event.clientY - screenRect.top;
                 isMouseDown = true;
+                //                document.getElementById("active").innerHTML = twoKanjis[active].name
             }
 
             canvas.onmousemove = function (e) {
@@ -189,22 +189,33 @@
                         }
                     })
                     if (found !== NILL) {
+                        if (lastActive !== active) {
+                            lastActive = active
+                            twoKanjis[active].updateDom()
+                            console.log("%c " + active + " " + lastActive, "background:blue")
+                        }
                         active = found
+                        document.getElementById("active").innerHTML = twoKanjis[active].name
                         const dx = x - prevMouseX;
                         const dy = y - prevMouseY;
-                        twoKanjis[active].x += dx
-                        twoKanjis[active].y += dy
-                        prevMouseX = x;
-                        prevMouseY = y;
+                        if (twoKanjis[active].x + dx > 0) {
+                            if (twoKanjis[active].y + dy > 0) {
+                                twoKanjis[active].x += dx
+                                twoKanjis[active].y += dy
+                                prevMouseX = x;
+                                prevMouseY = y;
+                            }
+                        }
                     }
                 }
             }
 
             canvas.onmouseup = function (e) {
-                var x = event.clientX - screenRect.left;
-                var y = event.clientY - screenRect.top;
+                //var x = event.clientX - screenRect.left;
+                //var y = event.clientY - screenRect.top;
                 isMouseDown = false;
                 isRectSelected = false;
+
             }
 
             canvas.onmouseout = function (e) {
