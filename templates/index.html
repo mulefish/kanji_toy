@@ -166,10 +166,10 @@
 
         function getTwoRandomKanjis() { 
             const left = getRandomThingByType(positions.LEFT)
-            const nill = getRandomThingByType(positions.LEFT)
+            const nill = getRandomThingByType(positions.NILL)
             twoKanjis = [] 
-            twoKanjis.push(new Thing(200, 100, left.k, "A", left.e))
-            twoKanjis.push(new Thing(250, 200, nill.k, "B", nill.e))
+            twoKanjis.push(new Thing(175, 150, left.k, "A", left.e))
+            twoKanjis.push(new Thing(250, 150, nill.k, "B", nill.e))
             console.log("left " + JSON.stringify( left ))
             console.log("nill " + JSON.stringify( nill ))
             twoKanjis[0].updateDom()
