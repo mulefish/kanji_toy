@@ -9,9 +9,10 @@
     <script type="text/javascript" src="/static/radicals.js"></script>
 
     <style type="text/css">
-        body{
-user-select: none;
-}
+        body {
+            user-select: none;
+        }
+
         h4 {
             font-family: sans-serif;
         }
@@ -126,8 +127,6 @@ user-select: none;
                 document.getElementById(y).innerHTML = this.y
                 document.getElementById(k).innerHTML = "&nbsp;&nbsp; " + this.kanji
                 document.getElementById(s).innerHTML = this.size
-
-
             }
         }
 
@@ -137,10 +136,7 @@ user-select: none;
 
 
     <script>
-
-
-
-
+        // Globals
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let screenRect;
@@ -150,7 +146,7 @@ user-select: none;
         const NILL = -1
         let active = 0
         let lastActive = undefined
-
+        //
         function init() {
             screenRect = canvas.getBoundingClientRect();
 
@@ -162,7 +158,12 @@ user-select: none;
 
             animate();
         }
-
+        function isInBounds(x, y) {
+            if ( x > 0 && y > 0 && x < canvas.width && y < canvas.height ) {
+                return true
+            }
+            return false 
+        }
         function addKeyEventListener() {
 
             canvas.onmousedown = function (e) {
@@ -198,16 +199,19 @@ user-select: none;
                         document.getElementById("active").innerHTML = twoKanjis[active].name
                         const dx = x - prevMouseX;
                         const dy = y - prevMouseY;
-                        if (twoKanjis[active].x + dx > 0) {
-                            if (twoKanjis[active].y + dy > 0) {
-                                twoKanjis[active].x += dx
-                                twoKanjis[active].y += dy
-                                prevMouseX = x;
-                                prevMouseY = y;
-                            }
+                        // if (twoKanjis[active].x + dx > 0) {
+                        //     if (twoKanjis[active].y + dy > 0) {
+                        const candidateX = twoKanjis[active].x + dx
+                        const candidateY = twoKanjis[active].y + dy
+                        if (isInBounds(candidateX, candidateY)) {
+                            twoKanjis[active].x = candidateX
+                            twoKanjis[active].y = candidateY
+                            prevMouseX = x;
+                            prevMouseY = y;
                         }
                     }
                 }
+
             }
 
             canvas.onmouseup = function (e) {
@@ -239,7 +243,6 @@ user-select: none;
         function drawCanvasBackground() {
             ctx.fillStyle = 'white';
             ctx.strokeStyle = 'black';
-
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.beginPath();
             ctx.rect(0, 0, canvas.width, canvas.height);
